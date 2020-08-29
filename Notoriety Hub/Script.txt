@@ -3,7 +3,7 @@ old = hookfunction(game.HttpGet, function(url, ...)
     if url == "https://dynago.xyz/showme.txt" then 
         return "1.9.0" 
     elseif url == "https://dynago.xyz/lib.lua" then
-        return old("https://github.com/users/sowdasjdba")
+        return old("https://raw.githubusercontent.com/Sowd0404/Cracks/master/Notoriety%20Hub/UiLibrary.txt")
     end
 
     return old(url, ...)
