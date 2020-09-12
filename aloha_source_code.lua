@@ -1,12 +1,3 @@
-
-
-
-
-
-
-
-
-
 local library = {};
 
 if game:GetService("CoreGui"):FindFirstChild("LibraryUI") then
