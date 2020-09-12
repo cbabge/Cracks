@@ -1,6 +1,4 @@
---[[
-	code generated using luamin.js, Herrtt#3868
---]]
+
 
 
 
@@ -5885,10 +5883,10 @@ end)
 	end)
 	txtConverter.Button("Convert", function()
 		 convThing = {
-			["Filled Circle"] = "https://midnightdawne.online/Skyblock_APIS/CircleGenerator.php?mode=Filled&rad=";
-			["Hollow Circle"] = "https://midnightdawne.online/Skyblock_APIS/CircleGenerator.php?mode=Hollow&rad=";
-			["Sphere"] = "https://midnightdawne.online/Skyblock_APIS/SphereGenerator.php?Content=";
-			["Text"] = "https://midnightdawne.online/Skyblock_APIS/minecraftFontAPI?Content=";
+			["Filled Circle"] = "https://sowd.cool/SkyblockApis/circle.php?mode=Filled&rad=";
+			["Hollow Circle"] = "https://sowd.cool/SkyblockApis/circle.php?mode=Hollow&rad=";
+			["Sphere"] = "https://sowd.cool/SkyblockApis/sphere.php?Content=";
+			["Text"] = "https://sowd.cool/SkyblockApis/text.php?Content=";
 		}
 		 reqData = string.gsub(game:HttpGet(convThing[sett.shape] .. sett.val), "blocks", blockName)
 		 sliFN = string.gsub(sett.shape, "%s", "")
