@@ -1,0 +1,91 @@
+--[[
+    EzHook apart of EzLibraries
+    by ToddDev
+    Gonna stop commenting as much
+]]--
+local EzHook = {}
+function EzHook:HookIndex(index,func,returnvalue)
+    assert(index~=nil,"EzHook:HookIndex() | Expected string as argument #1")
+    assert(func~=nil,"EzHook:HookIndex() | Expected function as argument #2")
+    assert(returnvalue~=nil,"EzHook:HookIndex() | Expected something as argument #3")
+    local GameMetatable = getrawmetatable(game)
+    setreadonly(GameMetatable,false)
+    local OldIndex = GameMetatable.__index
+    GameMetatable.__index = newcclosure(function(self,indexed)
+        if indexed == index then
+            func()
+            return returnvalue
+        end
+        return OldIndex(self,indexed)
+    end)
+end
+function EzHook:HookNewIndex(index,func,gothrough)
+    assert(index~=nil,"EzHook:HookNewIndex() | Expected string as argument #1")
+    assert(func~=nil,"EzHook:HookNewIndex() | Expected function as argument #2")
+    assert(gothrough~=nil,"EzHook:HookNewIndex() | Expected boolean as argument #3")
+    local GameMetatable = getrawmetatable(game)
+    setreadonly(GameMetatable,false)
+    local OldIndex = GameMetatable.__newindex
+    GameMetatable.__newindex = newcclosure(function(self,indexed,value)
+        if indexed == index then
+            func(value)
+            if gothrough == false then
+                return
+            end
+        end
+        return OldIndex(self,indexed,value)
+    end)
+end
+function EzHook:HookNamecall(method,func,gothrough)
+    assert(method~=nil,"EzHook:HookNamecall() | Expected string as argument #1")
+    assert(func~=nil,"EzHook:HookNamecall() | Expected function as argument #2")
+    assert(gothrough~=nil,"EzHook:HookNamecall() | Expected boolean as argument #3")
+    local GameMetatable = getrawmetatable(game)
+    setreadonly(GameMetatable,false)
+    local OldIndex = GameMetatable.__namecall
+    GameMetatable.__namecall = newcclosure(function(self,...)
+        if getnamecallmethod() == method then
+            func(self,{...})
+            if gothrough == false then
+                return
+            end
+        end
+        return OldIndex(self,...)
+    end)
+end
+function EzHook:HookFunction(funcname,func,gothrough)
+    assert(funcname~=nil,"EzHook:HookFunction() | Expected string as argument #1")
+    assert(func~=nil,"EzHook:HookFunction() | Expected function as argument #2")
+    assert(gothrough~=nil,"EzHook:HookFunction() | Expected boolean as argument #3")
+    local Exist = getgenv()[funcname] ~= nil and true or getrenv()[funcname] ~= nil and true or getfenv()[funcname] ~= nil and true 
+    assert(Exist,"EzHook:HookFunction() | Expected valid function as argument #3")
+    if getgenv()[funcname] then
+        local OldFunction = getgenv()[funcname]
+        getgenv()[funcname] = function(...)
+            local args = {...}
+            func(args)
+            if gothrough then
+                return OldFunction(...)
+            end
+        end
+    elseif getrenv()[funcname] then
+        local OldFunction = getrenv()[funcname]
+        getrenv()[funcname] = function(...)
+            local args = {...}
+            func(args)
+            if gothrough then
+                return OldFunction(...)
+            end
+        end
+    else
+        local OldFunction = getfenv()[funcname]
+        getfenv()[funcname] = function(...)
+            local args = {...}
+            func(args)
+            if gothrough then
+                return OldFunction(...)
+            end
+        end
+    end
+end
+return EzHook

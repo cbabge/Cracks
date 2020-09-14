@@ -1,0 +1,321 @@
+_G.Teamcheck = true
+_G.color = Color3.fromRGB(0, 170, 255)
+_G.BorderSizePixel = 25
+_G.BorderColor = Color3.fromRGB(255, 255, 255)
+_G.NameLabelColor = Color3.fromRGB(255, 255, 255)
+
+local faces = {"Bottom", "Top", "Front", "Back", "Left", "Right"}
+beamcolor = ColorSequence.new(_G.color)
+teams = game:GetService('Teams')
+UIS = game:GetService("UserInputService")
+local Active = true
+local camera = workspace.CurrentCamera
+local tracers = {}
+local players = {}
+local localplayer = game:GetService("Players").LocalPlayer
+function create(part)
+	for i = 1,#faces do
+		local Gui = Instance.new("SurfaceGui")
+		local Frame = Instance.new("Frame")
+		Gui.Parent = part
+		Gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		Gui.Face = faces[i]
+		Gui.LightInfluence = 1.000
+		Gui.AlwaysOnTop = true
+		Gui.Name = "1jiFzNgL6xwQUmyuOghE"
+		Frame.Parent = Gui
+		Frame.BackgroundColor3 = _G.color
+		Frame.Size = UDim2.new(1, 0, 1, 0)
+		Frame.BorderSizePixel = _G.BorderSizePixel
+		Frame.BorderColor3 = _G.BorderColor
+	end
+end
+
+function Add(char)
+	pcall(function()
+		repeat wait() until char
+		local siggyr6 = Instance.new("IntValue", char)
+		siggyr6.Name = "Signature"
+		for _,v in pairs(char:GetChildren()) do
+			if v:IsA('BasePart') then
+				create(v)
+			end
+		end
+	end)
+end
+function Tracer(v)
+	pcall(function()
+		if v == nil then return end
+		local beam = Instance.new("Beam", game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"))
+		local Attach0 = Instance.new("Attachment", game:GetService("Players").LocalPlayer.Character:FindFirstChild("HumanoidRootPart"))
+		local Attach1 = Instance.new("Attachment", v.Character:FindFirstChild("HumanoidRootPart"))
+		beam.Attachment0 = Attach0
+		beam.Attachment1 = Attach1
+		Attach0.Name = "1jiFzNgL6xwQUmyuOghE"
+		Attach1.Name = "1jiFzNgL6xwQUmyuOghE"
+		beam.Name = "1jiFzNgL6xwQUmyuOghE"
+		beam.Width0 = 0.04
+		beam.Width1 = 0.04
+		beam.FaceCamera = true
+		beam.Color = beamcolor
+		table.insert(tracers, beam)
+	end)
+	
+end
+function NameLabels(v)
+	pcall(function()
+		local BillboardGui = Instance.new("BillboardGui")
+		local NameLabel = Instance.new("TextLabel")
+		BillboardGui.Parent = v.Character:FindFirstChild("Head")
+		BillboardGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+		BillboardGui.Active = true
+		BillboardGui.AlwaysOnTop = true
+		BillboardGui.ExtentsOffset = Vector3.new(0, 5, 0)
+		BillboardGui.LightInfluence = 1.000
+		BillboardGui.MaxDistance = 9e9
+		BillboardGui.Size = UDim2.new(0, 200, 0, 50)
+		BillboardGui.Name = "1jiFzNgL6xwQUmyuOghE"
+		
+		NameLabel.Name = "NameLabel"
+		NameLabel.Parent = BillboardGui
+		NameLabel.BackgroundColor3 = _G.color
+		NameLabel.BackgroundTransparency = 1.000
+		NameLabel.BorderColor3 = _G.NameLabelColor
+		NameLabel.BorderSizePixel = 0
+		NameLabel.Size = UDim2.new(0, 200, 0, 50)
+		NameLabel.Font = Enum.Font.SourceSansBold
+		NameLabel.TextColor3 = _G.NameLabelColor
+		NameLabel.TextSize = 50.000
+		NameLabel.Text = v.Name
+	end)
+	
+end
+
+function DestroyObjects()
+	pcall(function()
+		for _,plrs in pairs(game:GetService("Players"):GetChildren()) do
+			WaitForCheck()
+			for _,v in pairs(game:GetService('Workspace'):GetDescendants()) do
+				WaitForCheck()
+				if v.Name == "1jiFzNgL6xwQUmyuOghE" or v.Name == "Signature" then
+					v:Destroy()
+				end
+			end
+		end
+	end)
+end
+
+function Refresh()
+	Active = false
+	notif("Refreshing Esp...")
+	tracers = {}
+	players = {}
+	for _,v in pairs(game:GetService("Players"):GetChildren()) do
+		TeamCheck(v)
+	end
+	notif("Resuming Script!")
+	Active = true
+	DestroyObjects()
+	LoadAll()
+end
+
+function WaitForCheck()
+	if Active ~= true then repeat wait() until Active == true end
+end
+
+function TeamCheck(v)
+	if _G.Teamcheck == true then
+		if localplayer.Team then
+			if v.Team ~= game:GetService("Players").LocalPlayer.Team then
+				if v.Character ~= nil then
+					table.insert(players, v)
+				end
+			end
+		else
+			if v.Character ~= nil then
+				table.insert(players, v)
+			end
+		end
+	else
+		if v.Character ~= nil then
+			table.insert(players, v)
+		end
+	end
+end
+
+function notif(text)
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "ESP";
+		Text = text;
+		Icon = "";
+		Duaration = 2;
+	})
+end
+
+print("Press 'Insert' or '=' to refresh esp")
+print("Press 'Delete' to toggle NameTags")
+print("Press 'BackSlash' to toggle TeamCheck")
+
+notif("Press 'Insert' or '=' to refresh esp")
+wait(1)
+notif("Press 'Delete' to toggle NameTags")
+wait(1)
+notif("Press 'BackSlash' to toggle TeamCheck")
+wait(1)
+notif("TeamCheck is OFF!")
+--[[
+function OnDied(plr)
+	Active = false
+	notif(plr.Name .. " Died, Restarsing scripts...")
+	tracers = {}
+	players = {}
+	wait(game:GetService("Players").RespawnTime + 1)
+	for _,v in pairs(game:GetService("Players"):GetChildren()) do
+		TeamCheck(v)
+	end
+	notif("Resuming Script!")
+	Active = true
+	LoadAll()
+end
+]]
+notif("Declaring functions...")
+game:GetService("Players").PlayerRemoving:Connect(function(plr)
+	Active = false
+	notif(plr.Name .. " Left, Refreshing TracerList..., Refreshing PlayerList...")
+	tracers = {}
+	players = {}
+	print(plr.Name)
+	for _,v in pairs(game:GetService("Players"):GetChildren()) do
+		TeamCheck(v)
+	end
+	notif("Resuming Script!")
+	Active = true
+	LoadAll()
+end)
+
+game:GetService("Players").LocalPlayer.Character:FindFirstChild("Humanoid").Died:Connect(function()
+	Active = false
+	notif("You died,  Restarting scripts...")
+	tracers = {}
+	players = {}
+	wait(game:GetService("Players").RespawnTime + 2.5)
+	for _,v in pairs(game:GetService("Players"):GetChildren()) do
+		TeamCheck(v)
+	end
+	notif("Resuming Script!")
+	Active = true
+	DestroyObjects()
+	LoadAll()
+end)
+
+game:GetService("Players").PlayerAdded:Connect(function(plr)
+	plr.CharacterAdded:Wait()
+	Active = false
+	notif(plr.Name .. " Joined, Refreshing TracerList..., Refreshing PlayerList...")
+	tracers = {}
+	players = {}
+	print(plr.Name)
+	plr.CharacterAdded:Wait()
+	for _,v in pairs(game:GetService("Players"):GetChildren()) do
+		TeamCheck(v)
+	end
+	notif("Resuming Script!")
+	Active = true
+	LoadAll()
+end)
+
+UIS.InputBegan:Connect(function(i)
+	if i.KeyCode == Enum.KeyCode.Insert or i.KeyCode == Enum.KeyCode.Equals then
+		Active = false
+		notif("Refreshing Esp...")
+		tracers = {}
+		players = {}
+		for _,v in pairs(game:GetService("Players"):GetChildren()) do
+			TeamCheck(v)
+		end
+		notif("Resuming Script!")
+		Active = true
+		DestroyObjects()
+		LoadAll()
+	end
+end)
+
+UIS.InputBegan:Connect(function(i)
+	if i.KeyCode == Enum.KeyCode.Delete then
+		Active = false
+		notif("Refreshing scripts...")
+		for _,v in next,players do
+			NameLabels(v)
+		end
+		notif("Toggled Namelabels!, Press 'Insert' to remove, Resuming Script!")
+		Active = true
+	end
+end)
+
+UIS.InputBegan:Connect(function(i)
+	if i.KeyCode == Enum.KeyCode.BackSlash then
+		Active = false
+		notif("Refreshing Teamcheck...")
+		if _G.Teamcheck == true then
+			_G.Teamcheck = false
+			notif("Teamcheck is now OFF!")
+			DestroyObjects()
+			tracers = {}
+			players = {}
+			for _,v in next,players do
+				game:GetService("RunService").Stepped:Wait()
+				TeamCheck(v)
+			end
+			
+		else
+			
+			_G.Teamcheck = true
+			notif("Teamcheck is now ON!")
+			DestroyObjects()
+			tracers = {}
+			players = {}
+			for _,v in next,players do
+				game:GetService("RunService").Stepped:Wait()
+				TeamCheck(v)
+			end
+		end
+		notif("Resuming Script!")
+		Active = true
+	end
+end)
+
+notif("Getting Players...")
+for _,v in pairs(game:GetService("Players"):GetPlayers()) do
+	WaitForCheck()
+	TeamCheck(v)
+	print(v.Name)
+end
+
+function LeakCheck()
+	while wait(0.5) and Active == true do
+		for _,plrs in next,players do
+			game:GetService("RunService").Stepped:Wait()
+			if plrs.Name ~= localplayer.Name then
+				if not plrs.Character:FindFirstChild("Signature") and Active == true then
+					TeamCheck(plrs)
+					DestroyObjects()
+					LoadAll()
+					notif("Automatically added esp to " .. plrs.Name)
+				end
+			end
+		end
+	end
+end
+
+notif("Loading Esp...")
+function LoadAll()
+	for _,plr in next,players do
+		if plr.Name ~= game:GetService("Players").LocalPlayer.Name then
+			Add(plr.Character)
+			Tracer(plr)
+		end
+	end
+end
+LoadAll()
+coroutine.wrap(LeakCheck)()
+notif("All scripts succesfully started!")
