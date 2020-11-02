@@ -1,0 +1,3 @@
+VFplR ={
+    ["whitelistcringe"] = {true},
+ }
